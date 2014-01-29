@@ -15,8 +15,9 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var s3 = require("gulp-s3");
 
-gulp.src("./dist")
-	.pipe(s3())
+options = JSON.parse(fs.readFileSync('./aws.json'));
+gulp.src('./dist/**', {read: false})
+    .pipe(s3(options))
 ```
 
 ## License
