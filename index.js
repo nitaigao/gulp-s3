@@ -1,70 +1,73 @@
 'use strict';
 
-// module.exports = function (options, settings) {
+var fs = require('fs');
+var knox = require('knox');
 
-// };
+module.exports = function (options) {
+    return es.map(function (file, cb) {
+
+        var isFile = fs.lstatSync(file.path).isFile();
+
+        if (!isFile) {
+            return false;
+        }
+
+        var stream = fs.createReadStream(file.path);
+        var client = knox.createClient(options);
+
+        var headers = {
+          'Content-Length': file.size,
+          'Content-Type': file.type
+        };
+
+        var uploadPath = file.path.replace(file.base, '');
+        client.putStream(stream, uploadPath, headers, function(err, res) {
+            console.log(err);
+          // error or successful upload
+        });
+    });
+};
 
 // var es = require('event-stream');
-// var gutil = require('gulp-util');
-// var ejs = require('ejs');
-
-// module.exports = function (options, settings) {
-//     return es.map(function (file, cb) {
-//         try {
-//             settings = settings || {};
-//             if(!settings.ext) settings.ext = '.html';
-
-//             options.filename = file.path
-
-//             file.contents = new Buffer(ejs.render(file.contents.toString(), options));
-//             file.path = gutil.replaceExtension(file.path, settings.ext);
-//             cb(null, file);
-//         } catch (err) {
-//             return cb(new Error('gulp-ejs: ' + err));
-//         }
-//     });
-// };
-
-
-// var gulp = require('gulp');
-// var knox = require('knox');
-// var es = require('event-stream');
+// var AWS = require('aws-sdk');
 // var fs = require('fs');
 
 // module.exports = function (options) {
-//     return es.map(function (file, cb) {
-//         var uploadPath = file.path.replace(file.base, '/');
-//         var opts = options || {}
-//         var client = knox.createClient(opts);
+//      return es.map(function (file, cb) {
 
-//         var isDirectory = fs.lstatSync(file.path).isDirectory()
+//          var isFile = fs.lstatSync(file.path).isFile();
 
-//         if (!isDirectory) {
-//             console.log(file.path);
-//             var req = client.put(file.path, {
-//                 'Content-Length': buf.length,
-//                 'Content-Type': 'text/plain'
-//             });
+//          if (!isFile) {
+//              return false;
+//          }
 
-//             req.on('response', function(res) {
-//                 if (200 == res.statusCode) {
-//                     console.log('saved to %s', req.url);
-//                 }
-//             });
+//         var uploadPath = file.path.replace(file.base, '');
+//         var opts = options || {};
 
-//             req.end(buf);
-//         }
+//         AWS.config.update({
+//          accessKeyId: options.key,
+//          secretAccessKey: options.secret
+//      });
 
-//         // if (!isDirectory) {
-//         //  client.putFile(file.path, uploadPath, function(err, res){
-//         //      if (err) {
-//         //          console.log(err);
-//         //      }
-//         //      res.resume();
-//         //  //  // console.log(res);
+//         var ep = new AWS.Endpoint('s3-eu-west-1.amazonaws.com');
+//      var s3 = new AWS.S3({endpoint: ep});
+//      var body = fs.readFileSync(file.path);
 
-//         //  //          // Always either do something with `res` or at least call `res.resume()`.
-//         //  });
-//         // }
-//     });
+//      var params = {
+//          Bucket: options.bucket,
+//          Key: uploadPath,
+//             Body: body
+//      }
+
+//      console.log(params);
+
+//      s3.putObject(params, function (err, res) {
+//             if (err) {
+//                 console.log("Error uploading data: ", err);
+//             }
+//         });
+
+//      console.log(uploadPath);
+//      });
 // };
+
