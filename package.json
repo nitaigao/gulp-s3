@@ -25,7 +25,7 @@
   "dependencies": {
     "event-stream": "*",
     "gulp-util": "~2.2.6",
-    "knox": ""
+    "aws-sdk": ""
   },
   "devDependencies": {
     "mocha": "~1.14.0",
