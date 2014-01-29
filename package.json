@@ -25,7 +25,7 @@
   "dependencies": {
     "event-stream": "*",
     "gulp-util": "~2.2.6",
-    "knox": "",
+    "knox": ""
   },
   "devDependencies": {
     "mocha": "~1.14.0",

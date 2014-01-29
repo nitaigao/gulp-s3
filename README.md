@@ -1,4 +1,4 @@
-# gulp-s3 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
+# gulp-s3 [![NPM version][npm-image]][npm-url]
 
 > s3 plugin for [gulp](https://github.com/wearefractal/gulp)
 
@@ -26,9 +26,3 @@ gulp.src('./dist/**', {read: false})
 
 [npm-url]: https://npmjs.org/package/gulp-s3
 [npm-image]: https://badge.fury.io/js/gulp-s3.png
-
-[travis-url]: http://travis-ci.org/nkostelnik/gulp-s3
-[travis-image]: https://secure.travis-ci.org/nkostelnik/gulp-s3.png?branch=master
-
-[depstat-url]: https://david-dm.org/nkostelnik/gulp-s3
-[depstat-image]: https://david-dm.org/nkostelnik/gulp-s3.png
