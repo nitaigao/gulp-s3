@@ -29,8 +29,6 @@ gulp.src('./dist/**', {read: false})
     .pipe(s3(options));
 ```
 
-Accepting pull requests for additional functionality.
-
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
