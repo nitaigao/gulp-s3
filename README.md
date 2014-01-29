@@ -10,8 +10,16 @@ First, install `gulp-s3` as a development dependency:
 npm install --save-dev gulp-s3
 ```
 
-Then, add it to your `gulpfile.js`:
+Setup your aws.json file
+```javascript
+{
+  "key": "AKIAI3Z7CUAFHG53DMJA",
+  "secret": "acYxWRu5RRa6CwzQuhdXEfTpbQA+1XQJ7Z1bGTCx",
+  "bucket": "dev.example.com",
+  "region": "eu-west-1"
+}
 
+Then, use it in your `gulpfile.js`:
 ```javascript
 var s3 = require("gulp-s3");
 
