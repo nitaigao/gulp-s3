@@ -18,6 +18,7 @@ Setup your aws.json file
   "bucket": "dev.example.com",
   "region": "eu-west-1"
 }
+```
 
 Then, use it in your `gulpfile.js`:
 ```javascript
