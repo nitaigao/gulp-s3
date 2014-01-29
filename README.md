@@ -26,8 +26,10 @@ var s3 = require("gulp-s3");
 
 options = JSON.parse(fs.readFileSync('./aws.json'));
 gulp.src('./dist/**', {read: false})
-    .pipe(s3(options))
+    .pipe(s3(options));
 ```
+
+Accepting pull requests for additional functionality.
 
 ## License
 
