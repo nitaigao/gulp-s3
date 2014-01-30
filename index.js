@@ -5,10 +5,10 @@ var fs = require('fs');
 var knox = require('knox');
 var gutil = require('gulp-util');
 
-module.exports = function (options) {
+module.exports = function (aws, options) {
   if (!options.delay) { options.delay = 0; }
 
-  var client = knox.createClient(options);
+  var client = knox.createClient(aws);
   var waitTime = 0;
 
   return es.mapSync(function (file, cb) {
