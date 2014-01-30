@@ -3,10 +3,14 @@
 var es = require('event-stream');
 var fs = require('fs');
 var knox = require('knox');
+var gutil = require('gulp-util');
 
 module.exports = function (options) {
+  if (!options.delay) { options.delay = 0; }
+
   var client = knox.createClient(options);
   var waitTime = 0;
+
   return es.mapSync(function (file, cb) {
       var isFile = fs.lstatSync(file.path).isFile();
       if (!isFile) { return false; }
@@ -17,15 +21,14 @@ module.exports = function (options) {
       setTimeout(function() {
         client.putFile(file.path, uploadPath, headers, function(err, res) {
             if (err || res.statusCode !== 200) {
-                console.log("Error uploading " + file.path);
+                gutil.log(gutil.colors.red('[FAILED]', file.path));
             } else {
-                console.log("Uploaded " + file.path);
+                gutil.log(gutil.colors.green('[SUCCESS]', file.path));
                 res.resume();
             }
-
         });
       }, waitTime);
 
-      waitTime += 50;
+      waitTime += options.delay;
   });
 };
