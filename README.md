@@ -25,7 +25,7 @@ Then, use it in your `gulpfile.js`:
 var s3 = require("gulp-s3");
 
 aws = JSON.parse(fs.readFileSync('./aws.json'));
-options = { delay: 1000 } # optional delay each request by x milliseconds
+options = { delay: 1000 } // optional delay each request by x milliseconds
 gulp.src('./dist/**', {read: false})
     .pipe(s3(aws, options));
 ```
