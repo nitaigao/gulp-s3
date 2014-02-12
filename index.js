@@ -17,6 +17,11 @@ module.exports = function (aws, options) {
 
       var uploadPath = file.path.replace(file.base, '');
       var headers = { 'x-amz-acl': 'public-read' };
+      if (options.headers) {
+          for (var key in options.headers) {
+              headers[key] = options.headers[key];
+          }
+      }
 
       setTimeout(function() {
         client.putFile(file.path, uploadPath, headers, function(err, res) {
