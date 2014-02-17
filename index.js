@@ -6,6 +6,8 @@ var knox = require('knox');
 var gutil = require('gulp-util');
 
 module.exports = function (aws, options) {
+  options = options || {};
+  
   if (!options.delay) { options.delay = 0; }
 
   var client = knox.createClient(aws);
@@ -15,7 +17,7 @@ module.exports = function (aws, options) {
       var isFile = fs.lstatSync(file.path).isFile();
       if (!isFile) { return false; }
 
-      var uploadPath = file.path.replace(file.base, '');
+      var uploadPath = file.path.replace(file.base, options.uploadPath || '');
       var headers = { 'x-amz-acl': 'public-read' };
 
       setTimeout(function() {
