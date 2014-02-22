@@ -1,6 +1,6 @@
 {
   "name": "gulp-s3",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A plugin for Gulp that uploads files to s3",
   "keywords": [
     "gulpplugin",
