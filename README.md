@@ -30,6 +30,43 @@ gulp.src('./dist/**', {read: false})
     .pipe(s3(aws, options));
 ```
 
+## API
+
+
+#### options.headers
+
+Type: `Array`          
+Default: `[]`
+
+Headers to set to each file uploaded to S3
+
+```javascript
+var options = { headers: ['Cache-Control': 'max-age=315360000, no-transform, public'] }
+gulp.src('./dist/**', {read: false})
+    .pipe(s3(aws, options));
+```
+
+#### options.gzippedOnly
+
+Type: `Boolean`          
+Default: `false`
+
+Only upload files with .gz extension, additionally it will remove the .gz suffix on destination filename and set appropriate Content-Type and Content-Encoding headers.
+
+```javascript
+var gulp = require("gulp");
+var s3 = require("gulp-s3");
+var gzip = require("gulp-gzip");
+var options = { gzippedOnly: true };
+
+gulp.src('./dist/**')
+.pipe(gzip())
+.pipe(gulp.dest('./dist'))
+.pipe(s3(aws, options));
+
+});
+```
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
