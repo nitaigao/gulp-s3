@@ -12,12 +12,12 @@ module.exports = function (aws, options) {
   
   var client = knox.createClient(aws);
   var waitTime = 0;
-  var regex = /\.([a-z]{2,4})\.gz$/i;
+  var regexGzip = /\.([a-z]{2,4})\.gz$/i;
 
   return es.mapSync(function (file, cb) {
       var isFile = fs.lstatSync(file.path).isFile();
 
-      // Verify this is a file and it doesn't matche our filter
+      // Verify this is a file
       if (!isFile) { return false; }
 
       var uploadPath = file.path.replace(file.base, options.uploadPath || '');
@@ -30,10 +30,10 @@ module.exports = function (aws, options) {
       }
 
       var matches;
-      if (options.gzippedOnly && !/\.gz$/gi.test(file.path)) { 
-        // If we have gzip enabled, ignore non-gzipped files
+      if (options.gzippedOnly && !regexGzip.test(file.path)) { 
+        // If we have gzip mode enabled, ignore non-gzipped files
         return false; 
-      } else if (options.gzippedOnly && (matches = regex.exec(file.path))) {
+      } else if (options.gzippedOnly && (matches = regexGzip.exec(file.path))) {
         // Handle uploading of gzipped files, set headers + rename extension
 
         var suffix = matches[1];
