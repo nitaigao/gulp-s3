@@ -13,12 +13,12 @@ module.exports = function (aws, options) {
   var client = knox.createClient(aws);
   var waitTime = 0;
   var regexGzip = /\.([a-z]{2,4})\.gz$/i;
+  var regexGeneral = /\.([a-z]{2,4})$/i;
 
   return es.mapSync(function (file, cb) {
-      var isFile = fs.lstatSync(file.path).isFile();
 
       // Verify this is a file
-      if (!isFile) { return false; }
+      if (!file.isBuffer()) { return false; }
 
       var uploadPath = file.path.replace(file.base, options.uploadPath || '');
 
@@ -28,14 +28,21 @@ module.exports = function (aws, options) {
               headers[key] = options.headers[key];
           }
       }
+      
+      if (options.gzippedOnly) {
+        if (!regexGzip.test(file.path)) { 
+          // Ignore non-gzipped files
+          return false; 
+        } else {
+          // Set proper encoding for gzipped files, remove .gz suffix
+          headers['Content-Encoding'] = 'gzip';
+          uploadPath = uploadPath.substring(0, uploadPath.length - 3);
+        }
+      }
 
+      // Set content type based of file extension
       var matches;
-      if (options.gzippedOnly && !regexGzip.test(file.path)) { 
-        // If we have gzip mode enabled, ignore non-gzipped files
-        return false; 
-      } else if (options.gzippedOnly && (matches = regexGzip.exec(file.path))) {
-        // Handle uploading of gzipped files, set headers + rename extension
-
+      if (matches = regexGeneral.exec(uploadPath)) {
         var suffix = matches[1];
         var encoding = 'plain';
         
@@ -64,23 +71,19 @@ module.exports = function (aws, options) {
             default:
                 suffix = 'text'; // If can't find a suitable encoding, set to text/plain
         }
-
-        headers['Content-Encoding'] = 'gzip';
         headers['Content-Type'] = encoding + '/' + suffix;
-        uploadPath = uploadPath.substring(0, uploadPath.length - 3);
       }
 
-      setTimeout(function() {
-        client.putFile(file.path, uploadPath, headers, function(err, res) {
-            if (err || res.statusCode !== 200) {
-                gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
-            } else {
-                gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
-                res.resume();
-            }
-        });
-      }, waitTime);
+      headers['Content-Length'] = file.stat.size;
 
-      waitTime += options.delay;
+      client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
+        if (err || res.statusCode !== 200) {
+          gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+        } else {
+          gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
+          res.resume();
+        }
+      });
+
   });
 };
