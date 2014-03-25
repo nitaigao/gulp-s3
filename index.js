@@ -17,7 +17,7 @@ module.exports = function (aws, options) {
       var isFile = fs.lstatSync(file.path).isFile();
       if (!isFile) { return false; }
 
-      var uploadPath = file.path.replace(file.base, options.uploadPath || '');
+      var uploadPath = file.path.replace(file.base, options.uploadPath || '').replace('\\','/');
       var headers = { 'x-amz-acl': 'public-read' };
       if (options.headers) {
           for (var key in options.headers) {
