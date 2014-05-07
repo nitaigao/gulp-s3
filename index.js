@@ -1,7 +1,6 @@
 'use strict';
 
 var es = require('event-stream');
-var fs = require('fs');
 var knox = require('knox');
 var gutil = require('gulp-util');
 var mime = require('mime');
