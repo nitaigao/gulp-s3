@@ -4,6 +4,8 @@ var es = require('event-stream');
 var fs = require('fs');
 var knox = require('knox');
 var gutil = require('gulp-util');
+var mime = require('mime');
+mime.default_type = 'text/plain';
 
 module.exports = function (aws, options) {
   options = options || {};
@@ -41,37 +43,8 @@ module.exports = function (aws, options) {
       }
 
       // Set content type based of file extension
-      var matches;
-      if (matches = regexGeneral.exec(uploadPath)) {
-        var suffix = matches[1];
-        var encoding = 'plain';
-
-        switch (suffix) {
-            case 'js':
-                suffix = 'javascript';
-                encoding = 'text';
-                break;
-
-            case 'css':
-            case 'html':
-                encoding = 'text';
-                break;
-
-            case 'jpg':
-                encode = 'image';
-                suffix = 'jpeg';
-                break;
-
-            case 'png':
-            case 'bmp':
-            case 'gif':
-                encoding = 'image';
-                break;
-
-            default:
-                suffix = 'text'; // If can't find a suitable encoding, set to text/plain
-        }
-        headers['Content-Type'] = encoding + '/' + suffix;
+      if (regexGeneral.test(uploadPath)) {
+        headers['Content-Type'] = mime.lookup(uploadPath);
       }
 
       headers['Content-Length'] = file.stat.size;
