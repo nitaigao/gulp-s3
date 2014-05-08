@@ -40,7 +40,7 @@ Default: `[]`
 Headers to set to each file uploaded to S3
 
 ```javascript
-var options = { headers: ['Cache-Control': 'max-age=315360000, no-transform, public'] }
+var options = { headers: {'Cache-Control': 'max-age=315360000, no-transform, public'} }
 gulp.src('./dist/**', {read: false})
     .pipe(s3(aws, options));
 ```
