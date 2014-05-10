@@ -16,10 +16,10 @@ module.exports = function (aws, options) {
   var regexGzip = /\.([a-z]{2,4})\.gz$/i;
   var regexGeneral = /\.([a-z]{2,4})$/i;
 
-  return es.mapSync(function (file, cb) {
+  return es.mapSync(function (file) {
 
       // Verify this is a file
-      if (!file.isBuffer()) { return false; }
+      if (!file.isBuffer()) { return file; }
 
       var uploadPath = file.path.replace(file.base, options.uploadPath || '');
       uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
@@ -33,7 +33,7 @@ module.exports = function (aws, options) {
       if (options.gzippedOnly) {
         if (!regexGzip.test(file.path)) {
           // Ignore non-gzipped files
-          return false;
+          return file;
         } else {
           // Set proper encoding for gzipped files, remove .gz suffix
           headers['Content-Encoding'] = 'gzip';
@@ -56,6 +56,7 @@ module.exports = function (aws, options) {
           res.resume();
         }
       });
-
+      
+      return file;
   });
 };
