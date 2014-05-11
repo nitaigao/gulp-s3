@@ -40,7 +40,7 @@ module.exports = function (aws, options) {
       }
 
       // Set content type based of file extension
-      if (regexGeneral.test(uploadPath)) {
+      if (!headers['Content-Type'] && regexGeneral.test(uploadPath)) {
         headers['Content-Type'] = mime.lookup(uploadPath);
       }
 
