@@ -42,6 +42,9 @@ module.exports = function (aws, options) {
       // Set content type based of file extension
       if (!headers['Content-Type'] && regexGeneral.test(uploadPath)) {
         headers['Content-Type'] = mime.lookup(uploadPath);
+        if (options.encoding) {
+          headers['Content-Type'] += '; charset=' + options.encoding;
+        }
       }
 
       headers['Content-Length'] = file.stat.size;
