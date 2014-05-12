@@ -30,20 +30,21 @@ module.exports = function (aws, options) {
           }
       }
 
-      if (options.gzippedOnly) {
-        if (!regexGzip.test(file.path)) {
-          // Ignore non-gzipped files
-          return file;
-        } else {
+      if (regexGzip.test(file.path)) {
           // Set proper encoding for gzipped files, remove .gz suffix
           headers['Content-Encoding'] = 'gzip';
           uploadPath = uploadPath.substring(0, uploadPath.length - 3);
-        }
+      } else if (options.gzippedOnly) {
+          // Ignore non-gzipped files
+          return file;
       }
 
       // Set content type based of file extension
-      if (regexGeneral.test(uploadPath)) {
+      if (!headers['Content-Type'] && regexGeneral.test(uploadPath)) {
         headers['Content-Type'] = mime.lookup(uploadPath);
+        if (options.encoding) {
+          headers['Content-Type'] += '; charset=' + options.encoding;
+        }
       }
 
       headers['Content-Length'] = file.stat.size;
@@ -56,7 +57,7 @@ module.exports = function (aws, options) {
           res.resume();
         }
       });
-      
+
       return file;
   });
 };
