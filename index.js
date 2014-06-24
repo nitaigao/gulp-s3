@@ -26,8 +26,6 @@ module.exports = function (aws, options) {
       // Verify this is a file
       if (!file.isBuffer()) { return cb(); }
 
-      gutil.log(gutil.colors.blue('[INFO]', 'handling ' + file.path));
-
       var uploadPath = file.path.replace(file.base, options.uploadPath || '');
       uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
       var headers = { 'x-amz-acl': 'public-read' };
