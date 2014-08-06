@@ -59,10 +59,24 @@ var gzip = require("gulp-gzip");
 var options = { gzippedOnly: true };
 
 gulp.src('./dist/**')
-.pipe(gzip())
-.pipe(s3(aws, options));
+  .pipe(gzip())
+  .pipe(s3(aws, options));
+```
 
-});
+#### options.uploadPath
+
+Type: `String`          
+Default: `''`
+
+Put files in the specified directory. For example, `assets/` will upload files to `{BUCKET_NAME}.s3.amazonaws.com/assets/{FILE}`. This can also be used to prefix file names if a trailing slash is not given.
+
+```javascript
+var gulp = require("gulp");
+var s3 = require("gulp-s3");
+var options = { uploadPath: 'assets/' };
+
+gulp.src('./dist/**')
+  .pipe(s3(aws, options));
 ```
 
 ## License
