@@ -4,7 +4,7 @@ var es = require('event-stream');
 var knox = require('knox');
 var gutil = require('gulp-util');
 var mime = require('mime');
-mime.default_type = 'text/plain';
+mime.defaultType = 'text/plain';
 
 module.exports = function (aws, options, directories) {
   options = options || {};
@@ -13,7 +13,6 @@ module.exports = function (aws, options, directories) {
   if (!options.delay) { options.delay = 0; }
 
   var client = knox.createClient(aws);
-  var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
   var regexGeneral = /\.([a-z]{2,})$/i;
   var i, rootIndex, rootPath;
@@ -74,9 +73,9 @@ module.exports = function (aws, options, directories) {
 
       client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
         if (err || res.statusCode !== 200) {
-          gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+          gutil.log(gutil.colors.red('[FAILED]', file.path + ' -> ' + uploadPath));
         } else {
-          gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
+          gutil.log(gutil.colors.green('[SUCCESS]', file.path + ' -> ' + uploadPath));
           res.resume();
         }
       });
