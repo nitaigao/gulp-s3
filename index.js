@@ -10,8 +10,6 @@ module.exports = function (aws, options, directories) {
   options = options || {};
   directories = directories || [];
 
-  console.log(aws);
-
   if (!options.delay) { options.delay = 0; }
 
   var client = knox.createClient(aws);
