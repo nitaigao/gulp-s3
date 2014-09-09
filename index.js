@@ -8,6 +8,7 @@ mime.default_type = 'text/plain';
 
 module.exports = function (aws, options, directories) {
   options = options || {};
+  directories = directories || [];
 
   console.log(aws);
 
@@ -24,21 +25,25 @@ module.exports = function (aws, options, directories) {
       // Verify this is a file
       if (!file.isBuffer()) { return file; }
 
-      // Get the root path based on provided directories
-      rootPath = file.path.split('/');
-      for(i = 0; i < directories.length; i++) {
-        rootIndex = rootPath.indexOf(directories[i]);
-        if(rootIndex > -1) {
-          rootPath = rootPath.splice(0, rootIndex);
-          rootPath = rootPath.join('/');
-          break;
+      if(directories.length) {
+        // Get the root path based on provided directories
+        rootPath = file.path.split('/');
+        for(i = 0; i < directories.length; i++) {
+          rootIndex = rootPath.indexOf(directories[i]);
+          if(rootIndex > -1) {
+            rootPath = rootPath.splice(0, rootIndex);
+            rootPath = rootPath.join('/');
+            break;
+          }
         }
-      }
 
-      // Trim the trailing '/', if present and if it is the last char of string
-      if(options.uploadPath.lastIndexOf('/') == options.uploadPath.length - 1) {
-        options.uploadPath = options.uploadPath
-          .substring(0, options.uploadPath.length - 1);
+        // Trim the trailing '/', if present and if it is the last char of string
+        if(options.uploadPath.lastIndexOf('/') === options.uploadPath.length - 1){
+          options.uploadPath = options.uploadPath
+            .substring(0, options.uploadPath.length - 1);
+        }
+      } else {
+        rootPath = file.base;
       }
 
       var uploadPath = file.path.replace(rootPath, options.uploadPath || '');

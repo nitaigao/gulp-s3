@@ -1,23 +1,23 @@
 {
   "name": "gulp-s3",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A plugin for Gulp that uploads files to s3",
   "keywords": [
     "gulpplugin",
     "gulp",
     "s3"
   ],
-  "homepage": "https://github.com/nkostelnik/gulp-s3",
-  "bugs": "https://github.com/nkostelnik/gulp-s3/issues",
+  "homepage": "https://github.com/cworsley4/gulp-s3",
+  "bugs": "https://github.com/cworsley4/gulp-s3/issues",
   "author": {
-    "name": "Nicholas Kostelnik",
-    "email": "",
-    "url": "https://github.com/nkostelnik"
-  },
+    "name": "Cecil Worsley",
+    "email": "cecilworsley4@gmail.com",
+    "url": "https://github.com/cworsley4"
+  },  
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/nkostelnik/gulp-s3.git"
+    "url": "git://github.com/cworsley4/gulp-s3.git"
   },
   "scripts": {
     "test": "mocha"
@@ -40,7 +40,7 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/nkostelnik/gulp-s3/blob/master/LICENSE"
+      "url": "https://github.com/cworsley4/gulp-s3/blob/master/LICENSE"
     }
   ]
 }
