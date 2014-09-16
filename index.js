@@ -33,7 +33,7 @@ module.exports = function (aws, options) {
       if (regexGzip.test(file.path)) {
           // Set proper encoding for gzipped files, remove .gz suffix
           headers['Content-Encoding'] = 'gzip';
-          uploadPath = uploadPath.substring(0, uploadPath.length - 3);
+          if (options.gzippedOnly) uploadPath = uploadPath.substring(0, uploadPath.length - 3);
       } else if (options.gzippedOnly) {
           // Ignore non-gzipped files
           return file;
