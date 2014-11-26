@@ -21,7 +21,15 @@ module.exports = function (aws, options) {
       // Verify this is a file
       if (!file.isBuffer()) { return file; }
 
-      var uploadPath = file.path.replace(file.base, options.uploadPath || '');
+      var uploadPath;
+
+      if (options.uploadPathResolution) {
+        uploadPath = options.uploadPathResolution(file.path);
+      } else {
+        uploadPath = options.uploadPath || '';
+      }
+
+      uploadPath = file.path.replace(file.base, uploadPath);
       uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
       var headers = { 'x-amz-acl': 'public-read' };
       if (options.headers) {
