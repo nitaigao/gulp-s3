@@ -24,7 +24,11 @@ module.exports = function (aws, options) {
       var uploadPath;
 
       if (options.uploadPathResolution) {
-        uploadPath = options.uploadPathResolution(file.path);
+        if (regexGzip.test(file.path)) {
+          uploadPath = options.uploadPathResolution(file.path.substring(0, file.path.length - 3));
+        } else {
+          uploadPath = options.uploadPathResolution(file.path);
+        }
       } else {
         uploadPath = options.uploadPath || '';
       }
