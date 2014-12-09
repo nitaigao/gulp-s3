@@ -48,15 +48,26 @@ module.exports = function (aws, options) {
       }
 
       headers['Content-Length'] = file.stat.size;
+      
+      var retries = 0;
 
-      client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
+      function doPut (err, res) {
         if (err || res.statusCode !== 200) {
           gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+          gutil.log(gutil.colors.yellow('[RETRYING]', file.path + " -> " + uploadPath));
+          if (options.retries && i < options.retries) {
+            i++;
+            client.putBuffer(file.contents, uploadPath, headers, doPut);
+          } else {
+            gutil.log(gutil.colors.pink('[MAX RETRIES]', file.path + " -> " + uploadPath));
+          }
         } else {
           gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
           res.resume();
         }
-      });
+      }
+
+      client.putBuffer(file.contents, uploadPath, headers, doPut);
 
       return file;
   });
