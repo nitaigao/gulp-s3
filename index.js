@@ -53,7 +53,7 @@ module.exports = function (aws, options) {
         if (err || res.statusCode !== 200) {
           gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
         } else {
-          gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
+          gutil.log(gutil.colors.green('[SUCCESS]') + ' ' + gutil.colors.grey(file.path) + gutil.colors.green(" -> ") + uploadPath);
           res.resume();
         }
       });
