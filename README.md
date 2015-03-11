@@ -23,6 +23,7 @@ Setup your aws.json file
 Then, use it in your `gulpfile.js`:
 ```javascript
 var s3 = require("gulp-s3");
+var fs = require("fs");
 
 aws = JSON.parse(fs.readFileSync('./aws.json'));
 gulp.src('./dist/**')
