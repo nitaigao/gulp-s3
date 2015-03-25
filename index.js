@@ -23,7 +23,7 @@ module.exports = function (aws, options) {
 
       var uploadPath = file.path.replace(file.base, options.uploadPath || '');
       uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
-      var headers = { 'x-amz-acl': 'public-read' };
+      var headers = {};
       if (options.headers) {
           for (var key in options.headers) {
               headers[key] = options.headers[key];
