@@ -13,7 +13,6 @@ module.exports = function (aws, options) {
   if (!options.delay) { options.delay = 0; }
 
   var dry = (yargs.dry) ? true : false;
-  var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
   var regexGeneral = /\.([a-z]{2,})$/i;
 
