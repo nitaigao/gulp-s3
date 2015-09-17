@@ -53,10 +53,8 @@ module.exports = function (aws, options) {
         if (err || res.statusCode !== 200) {
           gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
           if (options.dieOnError) {
-            gutil.log(gutil.colors.red("exiting with status -1"));
-            process.exit.bind(process, -1);
-          } else {
-            gutil.log(gutil.colors.green("continuing to publish..."));
+            gutil.log("exiting with status 1");
+            process.exit(1);
           }
         } else {
           gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
