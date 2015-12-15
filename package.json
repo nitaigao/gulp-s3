@@ -23,10 +23,10 @@
     "test": "mocha"
   },
   "dependencies": {
-    "async": "",
+    "async": "^1.5.0",
     "event-stream": "*",
     "gulp-util": "~2.2.6",
-    "knox": "",
+    "knox": "^0.9.2",
     "mime": "~1.2.11"
   },
   "devDependencies": {
