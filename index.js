@@ -1,7 +1,7 @@
 'use strict';
 
 var es = require('event-stream');
-var knox = require('knox');
+var Intimidate = require('intimidate');
 var gutil = require('gulp-util');
 var mime = require('mime');
 mime.default_type = 'text/plain';
@@ -10,8 +10,9 @@ module.exports = function (aws, options) {
   options = options || {};
 
   if (!options.delay) { options.delay = 0; }
+  if (options.maxRetries) { aws.maxRetries = options.maxRetries; }
 
-  var client = knox.createClient(aws);
+  var client = new Intimidate(aws);
   var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
   var regexGeneral = /\.([a-z]{2,})$/i;
@@ -26,7 +27,9 @@ module.exports = function (aws, options) {
       var headers = { 'x-amz-acl': 'public-read' };
       if (options.headers) {
           for (var key in options.headers) {
-              headers[key] = options.headers[key];
+              if (options.headers.hasOwnProperty(key)) {
+                  headers[key] = options.headers[key];
+              }
           }
       }
 
@@ -49,9 +52,12 @@ module.exports = function (aws, options) {
 
       headers['Content-Length'] = file.stat.size;
 
-      client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
+      client.putBuffer(file.contents, uploadPath, headers, function(err, res, maxRetries) {
         if (err || res.statusCode !== 200) {
-          gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+            gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+            if (options.maxRetries === maxRetries) {
+                process.exit(1);
+            }
         } else {
           gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
           res.resume();
