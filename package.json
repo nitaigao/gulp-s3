@@ -27,7 +27,7 @@
     "event-stream": "*",
     "gulp-util": "~2.2.6",
     "knox": "",
-    "mime": "~1.2.11"
+    "mime": "ScottVanderZwet/node-mime"
   },
   "devDependencies": {
     "mocha": "~1.14.0",
