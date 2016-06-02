@@ -47,7 +47,13 @@ module.exports = function (aws, options) {
         }
       }
 
-      headers['Content-Length'] = file.stat.size;
+      var contentLength = 0;
+      if(file.stat != null)
+        contentLength = file.stat.size; // In case of a stream
+      else
+        contentLength = file.contents.length; // It may be a buffer
+
+      headers['Content-Length'] = contentLength;
 
       client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
         if (err || res.statusCode !== 200) {
