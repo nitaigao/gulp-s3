@@ -16,7 +16,7 @@ Then, use it in your `gulpfile.js`:
 var s3   = require('gulp-s3')
 var gulp = require('gulp')
 
-var aws = {
+var AWS = {
   "key":    process.env.AWS_ACCESS_KEY_ID,
   "secret": process.env.AWS_SECRET_ACCESS_KEY,
   "bucket": "dev.example.com",
@@ -24,7 +24,7 @@ var aws = {
 }
 
 gulp.task('default', () => {
-  gulp.src('./dist/**').pipe(s3(aws));
+  gulp.src('./dist/**').pipe(s3(AWS));
 });
 ```
 
