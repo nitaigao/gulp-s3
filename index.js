@@ -3,6 +3,7 @@
 var es = require('event-stream');
 var knox = require('knox');
 var gutil = require('gulp-util');
+var sleep = require('sleep');
 var mime = require('mime');
 mime.default_type = 'text/plain';
 
@@ -10,6 +11,7 @@ module.exports = function (aws, options) {
   options = options || {};
 
   if (!options.delay) { options.delay = 0; }
+  if (!options.sleep) { options.sleep = 0; }
 
   var client = knox.createClient(aws);
   var waitTime = 0;
@@ -17,6 +19,7 @@ module.exports = function (aws, options) {
   var regexGeneral = /\.([a-z]{2,})$/i;
 
   return es.mapSync(function (file) {
+      sleep.usleep(options.sleep);
 
       // Verify this is a file
       if (!file.isBuffer()) { return file; }

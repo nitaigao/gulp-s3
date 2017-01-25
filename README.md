@@ -65,6 +65,21 @@ gulp.src('./dist/**')
 });
 ```
 
+
+#### options.sleep
+
+Type: `Array`
+Default: `[]`
+
+sleep every file uploaded to S3
+prevent to over PutLimit
+
+```javascript
+var options = { sleep: 3000 } }
+gulp.src('./dist/**', {read: false})
+    .pipe(s3(aws, options));
+```
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
