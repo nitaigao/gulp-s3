@@ -41,7 +41,7 @@ Headers to set to each file uploaded to S3
 
 ```javascript
 var options = { headers: {'Cache-Control': 'max-age=315360000, no-transform, public'} }
-gulp.src('./dist/**', {read: false})
+gulp.src('./dist/**')
     .pipe(s3(aws, options));
 ```
 
@@ -63,6 +63,32 @@ gulp.src('./dist/**')
 .pipe(s3(aws, options));
 
 });
+```
+
+#### options.uploadPath
+
+Type: `String`
+Default: `''`
+
+S3 prefix to add to each uploaded file.
+
+```javascript
+var options = { uploadPath: '/dev/assets/' }
+gulp.src('./dist/**')
+    .pipe(s3(aws, options));
+```
+
+#### options.asyncLimit
+
+Type: `Number`
+Default: `4`
+
+Limits the number of concurrent uploads to S3.
+
+```javascript
+var options = { asyncLimit: 8 }
+gulp.src('./dist/**')
+    .pipe(s3(aws, options));
 ```
 
 ## License

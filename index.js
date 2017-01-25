@@ -4,6 +4,7 @@ var es = require('event-stream');
 var knox = require('knox');
 var gutil = require('gulp-util');
 var mime = require('mime');
+var async = require('async');
 mime.default_type = 'text/plain';
 
 module.exports = function (aws, options) {
@@ -12,14 +13,18 @@ module.exports = function (aws, options) {
   if (!options.delay) { options.delay = 0; }
 
   var client = knox.createClient(aws);
-  var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
   var regexGeneral = /\.([a-z]{2,})$/i;
+  var files = [];
 
-  return es.mapSync(function (file) {
+  return es.through(function write (data) {
+    files.push(data);
+  }, function end () {
+    var self = this;
 
+    async.eachLimit(files, options.asyncLimit || 4, function (file, cb) {
       // Verify this is a file
-      if (!file.isBuffer()) { return file; }
+      if (!file.isBuffer()) { return cb(); }
 
       var uploadPath = file.path.replace(file.base, options.uploadPath || '');
       uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
@@ -36,7 +41,7 @@ module.exports = function (aws, options) {
           if (options.gzippedOnly) uploadPath = uploadPath.substring(0, uploadPath.length - 3);
       } else if (options.gzippedOnly) {
           // Ignore non-gzipped files
-          return file;
+          return cb();
       }
 
       // Set content type based of file extension
@@ -51,13 +56,17 @@ module.exports = function (aws, options) {
 
       client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
         if (err || res.statusCode !== 200) {
-          gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+          gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath + " (" + (res && res.statusCode) + ")" + " (" + err + ")"));
+          cb(err);
         } else {
           gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
           res.resume();
+          self.emit('data', file);
+          cb(null);
         }
       });
-
-      return file;
+    }, function (err) {
+      self.emit('end', err);
+    });
   });
 };
