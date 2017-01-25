@@ -54,7 +54,7 @@ module.exports = function (aws, options) {
         gutil.log(gutil.colors.red('  AWS ERROR:', err));
         finished(err, null)
       } else {
-        gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
+        gutil.log(gutil.colors.green('[SUCCESS]') + ' ' + gutil.colors.grey(file.path) + gutil.colors.green(" -> ") + uploadPath);
         res.resume();
         finished(null, file)
       }
