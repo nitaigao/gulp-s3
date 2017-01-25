@@ -72,8 +72,6 @@ var options = { gzippedOnly: true };
 gulp.src('./dist/**')
 .pipe(gzip())
 .pipe(s3(aws, options));
-
-});
 ```
 
 ## License
