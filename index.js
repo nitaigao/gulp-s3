@@ -12,7 +12,6 @@ module.exports = function (aws, options) {
   if (!options.delay) { options.delay = 0; }
 
   var client = knox.createClient(aws);
-  var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
   var regexGeneral = /\.([a-z]{2,})$/i;
 
@@ -21,7 +20,10 @@ module.exports = function (aws, options) {
       // Verify this is a file
       if (!file.isBuffer()) { return file; }
 
-      var uploadPath = file.path.replace(file.base, options.uploadPath || '');
+      var uploadPath = options.dest ?
+        options.dest :
+        file.path.replace(file.base, options.uploadPath || '');
+
       uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
       var headers = { 'x-amz-acl': 'public-read' };
       if (options.headers) {

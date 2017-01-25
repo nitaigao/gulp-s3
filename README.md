@@ -65,6 +65,19 @@ gulp.src('./dist/**')
 });
 ```
 
+#### options.dest
+
+Type: `String`          
+Default: ``
+
+Upload file to a different destination name.
+
+```javascript
+var options = { dest: 'foobar.png }
+gulp.src('./dist/barfoo.png')
+    .pipe(s3(aws, options));
+```
+
 ## License
 
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
