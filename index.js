@@ -9,8 +9,6 @@ mime.default_type = 'text/plain';
 module.exports = function (aws, options) {
   options = options || {};
 
-  if (!options.delay) { options.delay = 0; }
-
   var client = knox.createClient(aws);
   var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
