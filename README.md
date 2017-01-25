@@ -31,6 +31,18 @@ gulp.task('default', () => {
 
 ## API
 
+#### options.uploadPath
+
+Type: `String`          
+Default: ``
+
+Set the remote folder on the S3 bucket
+
+```javascript
+var options = { uploadPath: 'remote-folder' } // It will upload the 'src' into '/remote-folder'
+gulp.src('./dist/**', {read: false})
+    .pipe(s3(aws, options));
+```
 
 #### options.headers
 
