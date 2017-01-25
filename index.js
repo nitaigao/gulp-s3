@@ -51,7 +51,9 @@ module.exports = function (aws, options) {
 
     client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
       if (err || res.statusCode !== 200) {
-        gutil.log(gutil.colors.red('[FAILED]', res.statusCode, file.path + " -> " + uploadPath));
+        gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+        gutil.log(gutil.colors.red('  HTTP STATUS:', res.statusCode));
+        gutil.log(gutil.colors.red('  AWS ERROR:', err));
         finished(err, null)
       } else {
         gutil.log(gutil.colors.green('[SUCCESS]', file.path + " -> " + uploadPath));
