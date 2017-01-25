@@ -47,7 +47,7 @@ module.exports = function (aws, options) {
         }
       }
 
-      headers['Content-Length'] = file.stat.size;
+      headers['Content-Length'] = file.contents.toString().length;
 
       client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
         if (err || res.statusCode !== 200) {
