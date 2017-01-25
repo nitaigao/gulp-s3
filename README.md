@@ -14,11 +14,10 @@ npm install --save-dev gulp-s3
 Then, use it in your `gulpfile.js`:
 ```javascript
 var s3 = require('gulp-s3')
-var fs = require('fs')
 var gulp = require('gulp')
 
 var aws = {
-  "key": process.env.AWS_ACCESS_KEY_ID,
+  "key":    process.env.AWS_ACCESS_KEY_ID,
   "secret": process.env.AWS_SECRET_ACCESS_KEY,
   "bucket": "dev.example.com",
   "region": "eu-west-1"
