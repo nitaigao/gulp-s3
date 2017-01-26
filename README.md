@@ -66,7 +66,7 @@ Only upload files with .gz extension, additionally it will remove the .gz suffix
 ```javascript
 var options = { gzippedOnly: true };
 gulp.src('./dist/**').pipe(gzip())
-  .pipe(s3(aws, options));
+    .pipe(s3(aws, options));
 ```
 
 #### options.failOnError
@@ -78,7 +78,7 @@ Throw error if upload to s3 fails.
 ```javascript
 var options = { failOnError: true };
 gulp.src('./dist/**').pipe(gzip())
-  .pipe(s3(aws, options));
+    .pipe(s3(aws, options));
 ```
 
 ## License
