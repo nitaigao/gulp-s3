@@ -59,10 +59,12 @@ module.exports = function (aws, options) {
 
         if (err) {
           gutil.log(gutil.colors.red('  AWS ERROR:', err));
+          throw new Error(err);
         } 
         
         if (res && res.statusCode !== 200){
           gutil.log(gutil.colors.red('  HTTP STATUS:', res.statusCode));
+          throw new Error('HTTP Status Code: ' + res.statusCode);
         }
 
         finished(err, null)
