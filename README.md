@@ -40,7 +40,7 @@ Set the remote folder on the S3 bucket
 ```javascript
 var options = { uploadPath: 'remote-folder' } // It will upload the 'src' into '/remote-folder'
 gulp.src('./dist/**', {read: false})
-    .pipe(s3(aws, options));
+    .pipe(s3(AWS, options));
 ```
 
 #### options.headers
@@ -53,7 +53,7 @@ Headers to set to each file uploaded to S3
 ```javascript
 var options = { headers: {'Cache-Control': 'max-age=315360000, no-transform, public'} }
 gulp.src('./dist/**', {read: false})
-    .pipe(s3(aws, options));
+    .pipe(s3(AWS, options));
 ```
 
 #### options.gzippedOnly
@@ -66,7 +66,7 @@ Only upload files with .gz extension, additionally it will remove the .gz suffix
 ```javascript
 var options = { gzippedOnly: true };
 gulp.src('./dist/**').pipe(gzip())
-    .pipe(s3(aws, options));
+    .pipe(s3(AWS, options));
 ```
 
 #### options.failOnError
@@ -78,7 +78,7 @@ Throw error if upload to s3 fails.
 ```javascript
 var options = { failOnError: true };
 gulp.src('./dist/**').pipe(gzip())
-    .pipe(s3(aws, options));
+    .pipe(s3(AWS, options));
 ```
 
 ## License
