@@ -63,6 +63,11 @@ Default: `false`
 
 Only upload files with .gz extension, additionally it will remove the .gz suffix on destination filename and set appropriate Content-Type and Content-Encoding headers.
 
+```javascript
+var options = { gzippedOnly: true };
+gulp.src('./dist/**').pipe(gzip())
+  .pipe(s3(aws, options));
+```
 
 #### options.failOnError
 Type: `Boolean`
@@ -70,18 +75,10 @@ Default: `false`
 
 Throw error if upload to s3 fails.
 
-### Passing the options hash
-
 ```javascript
-var gulp = require("gulp");
-var s3 = require("gulp-s3");
-var gzip = require("gulp-gzip");
 var options = { failOnError: true };
-
-gulp.src('./dist/**')
-  .pipe(gzip())
+gulp.src('./dist/**').pipe(gzip())
   .pipe(s3(aws, options));
-});
 ```
 
 ## License
