@@ -70,6 +70,8 @@ Default: `false`
 
 Throw error if upload to s3 fails.
 
+## Passing the options hash
+
 ```javascript
 var gulp = require("gulp");
 var s3 = require("gulp-s3");
