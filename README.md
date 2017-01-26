@@ -74,12 +74,11 @@ Throw error if upload to s3 fails.
 var gulp = require("gulp");
 var s3 = require("gulp-s3");
 var gzip = require("gulp-gzip");
-var options = { gzippedOnly: true };
+var options = { failOnError: true };
 
 gulp.src('./dist/**')
-.pipe(gzip())
-.pipe(s3(aws, options));
-
+  .pipe(gzip())
+  .pipe(s3(aws, options));
 });
 ```
 
