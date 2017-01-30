@@ -39,7 +39,7 @@ Set the remote folder on the S3 bucket
 
 ```javascript
 var options = { uploadPath: 'remote-folder' } // It will upload the 'src' into '/remote-folder'
-gulp.src('./dist/**', {read: false})
+gulp.src('./dist/**')
     .pipe(s3(AWS, options));
 ```
 
@@ -57,7 +57,7 @@ var options = {
     'x-amz-acl': 'private'
   } 
 };
-gulp.src('./dist/**', {read: false})
+gulp.src('./dist/**')
     .pipe(s3(AWS, options));
 ```
 
