@@ -15,7 +15,7 @@ module.exports = function (aws, options) {
   var regexGeneral = /\.([a-z]{2,})$/i;
 
   return es.map(function (file, finished) {
-  if (!file.isBuffer()) { return file; }
+    if (!file.isBuffer()) { finished(null, file); return; }
 
     var uploadPath = file.path.replace(file.base, options.uploadPath || '');
     uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
