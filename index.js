@@ -1,78 +1,79 @@
-'use strict';
-
-var es = require('event-stream');
-var knox = require('knox');
-var gutil = require('gulp-util');
-var mime = require('mime');
-mime.default_type = 'text/plain';
+'use strict'
+var async   = require('async')
+var _       = require('lodash')
+var AWS     = require('aws-sdk')
+var s3      = new AWS.S3()
 
 module.exports = function (aws, options) {
-  options = options || {};
+  options = options || {
+    limit: 10
+  }
 
-  var client = knox.createClient(aws);
-  var waitTime = 0;
-  var regexGzip = /\.([a-z]{2,})\.gz$/i;
-  var regexGeneral = /\.([a-z]{2,})$/i;
+  var stream = new require('stream').Writable()
 
-  return es.map(function (file, finished) {
-    if (!file.isBuffer()) { finished(null, file); return; }
-
-    var uploadPath = file.path.replace(file.base, options.uploadPath || '');
-    uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
-    
-    var headers = { 'x-amz-acl': 'public-read' };
-
-    if (options.headers) {
-      for (var key in options.headers) {
-        headers[key] = options.headers[key];
-      }
-    }
-
-    if (regexGzip.test(file.path)) {
-      headers['Content-Encoding'] = 'gzip';
-      if (options.gzippedOnly) {
-        uploadPath = uploadPath.substring(0, uploadPath.length - 3);
-      }
-    } else if (options.gzippedOnly) {
-      return file;
-    }
-
-    // Set content type based on file extension
-    if (!headers['Content-Type'] && regexGeneral.test(uploadPath)) {
-      headers['Content-Type'] = mime.lookup(uploadPath);
-      if (options.encoding) {
-        headers['Content-Type'] += '; charset=' + options.encoding;
-      }
-    }
-
-    var contentLength = 0;
-    if(file.stat != null)
-      contentLength = file.stat.size; // In case of a stream
-    else
-      contentLength = file.contents.length; // It may be a buffer
-
-    headers['Content-Length'] = contentLength;
-
-    client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
-      if (err || res && res.statusCode !== 200) {
-        gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
-
-        if (err) {
-          gutil.log(gutil.colors.red('  AWS ERROR:', err));
-          throw new Error(err);
-        } 
-        
-        if (res && res.statusCode !== 200){
-          gutil.log(gutil.colors.red('  HTTP STATUS:', res.statusCode));
-          throw new Error('HTTP Status Code: ' + res.statusCode);
-        }
-
-        finished(err, null)
+  function cleanup(jobs, cb) {
+    console.log("Scanning items to cleanup...")
+    var LIST_PARAMS = { Bucket: aws.bucket }
+    s3.listObjects(LIST_PARAMS, function(err, data) {
+      
+      if (err) console.log(err, err.stack)
+      var results =_.differenceWith(data.Contents, jobs, function(a, b) {
+        return (a.Key == b.key)
+      })
+      
+      var deletables = results.map(function (result) { return { Key: result.Key }})
+      if (deletables.length > 0) {
+        console.log("Found", deletables.length, "items to cleanup")
+        var DELETE_PARAMS = { Bucket: aws.bucket, Delete: { Objects: deletables } }
+        s3.deleteObjects(DELETE_PARAMS, function(err, data) {
+          if (err) console.log(err, err.stack)
+          console.log("Cleaned up", deletables.length, "items")
+          cb()
+        })  
       } else {
-        gutil.log(gutil.colors.green('[SUCCESS]') + ' ' + gutil.colors.grey(file.path) + gutil.colors.green(" -> ") + uploadPath);
-        res.resume();
-        finished(null, file)
+        console.log("Nothing to cleanup, skipping")
+        cb()
       }
-    });
-  });
-};
+    })
+  }
+
+  function upload(jobs, cb) {
+    console.log("Starting upload of", jobs.length, "items")
+    async.eachLimit(jobs, options.limit, function(job, done) {
+      var params = { Bucket: aws.bucket, Key: job.key }
+      s3.putObject(params, function(err, data) {
+        if (err) console.log(err)
+        console.log(job.key)
+        done(err)
+      })
+    }, function(err) {
+      console.log("Finished uploading", jobs.length, "items")
+      cb(err)
+    })
+  }
+
+  var jobs = []
+
+  stream.write = function(file) {
+    if (!file.isBuffer()) return
+
+    var key = file.path
+      .replace(file.base, options.uploadPath || '')
+      .replace(new RegExp('\\\\', 'g'), '/')
+
+    jobs.push({
+      key: key,
+      file: file
+    })
+  }
+
+  stream.end = function() {
+    upload(jobs, function() {
+      cleanup(jobs, function() {
+        stream.emit('end')
+      })
+    })
+  }
+
+  return stream
+}
