@@ -6,7 +6,7 @@ var s3      = new AWS.S3()
 
 module.exports = function (aws, options) {
   options = options || {
-    limit: 10
+    concurrency: 10
   }
 
   var stream = new require('stream').Writable()
@@ -39,7 +39,7 @@ module.exports = function (aws, options) {
 
   function upload(jobs, cb) {
     console.log("Starting upload of", jobs.length, "items")
-    async.eachLimit(jobs, options.limit, function(job, done) {
+    async.eachLimit(jobs, options.concurrency, function(job, done) {
       var params = { Bucket: aws.bucket, Key: job.key }
       s3.putObject(params, function(err, data) {
         if (err) console.log(err)
