@@ -12,7 +12,7 @@ module.exports = function (aws, options) {
   var client = knox.createClient(aws);
   var waitTime = 0;
   var regexGzip = /\.([a-z]{2,})\.gz$/i;
-  var regexGeneral = /\.([a-z]{2,})$/i;
+  var regexGeneral = /\.([a-z0-9]{2,})$/i;
 
   return es.map(function (file, finished) {
     if (!file.isBuffer()) { finished(null, file); return; }
