@@ -1,8 +1,9 @@
 'use strict';
 
+var colors = require('ansi-colors');
 var es = require('event-stream');
 var knox = require('knox');
-var gutil = require('gulp-util');
+var log = require('fancy-log');
 var mime = require('mime');
 mime.default_type = 'text/plain';
 
@@ -19,7 +20,7 @@ module.exports = function (aws, options) {
 
     var uploadPath = file.path.replace(file.base, options.uploadPath || '');
     uploadPath = uploadPath.replace(new RegExp('\\\\', 'g'), '/');
-    
+
     var headers = { 'x-amz-acl': 'public-read' };
 
     if (options.headers) {
@@ -55,21 +56,21 @@ module.exports = function (aws, options) {
 
     client.putBuffer(file.contents, uploadPath, headers, function(err, res) {
       if (err || res && res.statusCode !== 200) {
-        gutil.log(gutil.colors.red('[FAILED]', file.path + " -> " + uploadPath));
+        log(colors.red('[FAILED]', file.path + " -> " + uploadPath));
 
         if (err) {
-          gutil.log(gutil.colors.red('  AWS ERROR:', err));
+          log(colors.red('  AWS ERROR:', err));
           throw new Error(err);
-        } 
-        
+        }
+
         if (res && res.statusCode !== 200){
-          gutil.log(gutil.colors.red('  HTTP STATUS:', res.statusCode));
+          log(colors.red('  HTTP STATUS:', res.statusCode));
           throw new Error('HTTP Status Code: ' + res.statusCode);
         }
 
         finished(err, null)
       } else {
-        gutil.log(gutil.colors.green('[SUCCESS]') + ' ' + gutil.colors.grey(file.path) + gutil.colors.green(" -> ") + uploadPath);
+        log(colors.green('[SUCCESS]') + ' ' + colors.grey(file.path) + colors.green(" -> ") + uploadPath);
         res.resume();
         finished(null, file)
       }

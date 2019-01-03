@@ -6,7 +6,6 @@ should = require('should'),
 path = require('path');
 require('mocha');
 
-var gutil = require('gulp-util'),
-s3 = require('../');
+var s3 = require('../');
 
 describe('gulp-s3', function () { });
