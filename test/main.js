@@ -6,7 +6,8 @@ should = require('should'),
 path = require('path');
 require('mocha');
 
-var gutil = require('gulp-util'),
-s3 = require('../');
+var flog = require('fancy-log');
+var colors = require('ansi-colors');
+var s3 = require('../');
 
 describe('gulp-s3', function () { });
